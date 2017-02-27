@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</head>
+<body ng-app="myApp">
+
+<div class="container">
+    <div ng-controller="myCtrl as v">
+        <div ng-if="v.upper" class="row">
+            <div class="thumbnail col-md-4 col-md-offset-4">
+                <img ng-src="{{v.pic}}" />
+                <div class="caption">
+                    <h3>{{v.Brand}}</h3>
+                    <p ng-repeat="up in v.upperData">
+                        {{up}}
+                    </p>
+                    <p>
+                        <a href="javascript:void(0)" class="btn btn-primary" role="button" ng-click="v.clear()">Clear</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!--{{washer.ProductsList[1].ProductInfo.p_product_specs}}-->
+        <div class="row">
+            <div ng-repeat="(key, p) in v.washers.data.ProductsList">
+                <div class="col-md-4">
+                    <div class="thumbnail">
+                        <img ng-src="{{p.imageURLs.sm}}" />
+                        <div class="caption">
+                            <h3>{{p.ProductInfo.Brand}}</h3>
+                            <p>{{p.ProductInfo.p_product_specs.Value[0].Key}}</p>
+                            <p>{{p.ProductInfo.p_product_specs.Value[0].Value}}</p>
+                            <p>{{p.ProductInfo.p_product_specs.Value[1].Key}}</p>
+                            <p>{{p.ProductInfo.p_product_specs.Value[1].Value}}</p>
+                            <p>{{p.ProductInfo.p_product_specs.Value[2].Key}}</p>
+                            <p>{{p.ProductInfo.p_product_specs.Value[2].Value}}</p>
+                            <p>
+                                <a href="javascript:void(0)" class="btn btn-primary" role="button" ng-click="v.show(key)">Button</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+<script type="text/javascript" src="app.js"></script>
+</body>
+</html>
+<script>
+    (function () {
+
+        'use strict';
+
+        angular.module('myApp', [])
+            .controller('myCtrl', myCtrl);
+
+        myCtrl.$inject = ["$http"];
+
+        function myCtrl($http) {
+            $http.get('data.json').then(function(data) {
+                vm.washers = data;
+            });
+
+            var vm = this;
+            vm.upper = false;
+            vm.show = function(key) {
+                vm.upper = true;
+                vm.pic = vm.washers.data.ProductsList[key].imageURLs.sm;
+                vm.brand = vm.washers.data.ProductsList[key].ProductInfo.Brand;
+                var temp = vm.washers.data.ProductsList[key].ProductInfo.p_product_specs;
+                vm.upperData = [
+                    temp.Value[0].Key,
+                    temp.Value[0].Value,
+                    temp.Value[1].Key,
+                    temp.Value[1].Value,
+                    temp.Value[2].Key,
+                    temp.Value[2].Value,
+                ];
+//                    console.log(temp);
+            };
+
+            vm.clear = function () {
+                vm.upper = false;
+            }
+
+        }
+    }());
+
+</script>
